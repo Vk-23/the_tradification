@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <title>Admin Panel - Testimonials</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/fonts.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/icofont.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+<body>
+<div class="loader"><div class="spinner"><img src="assets/images/loader.gif" alt="Loading..."></div></div>
+<div class="page-wrapper">
+    <div id="header"></div>
+    <div id="sidebar"></div>
+    <div class="page-wrapper">
+        <div class="main-content">
+            <div class="row"><div class="col-12">
+                <div class="page-title-wrapper">
+                    <div class="page-title-box"><h4 class="page-title bold">Testimonials Management</h4></div>
+                    <div class="breadcrumb-list"><ul>
+                        <li class="breadcrumb-link"><a href="index"><i class="fas fa-home mr-2"></i>Dashboard</a></li>
+                        <li class="breadcrumb-link active">Testimonials</li>
+                    </ul></div>
+                </div>
+            </div></div>
+
+            <button class="btn btn-primary my-3" id="addTestimonialBtn">Add Testimonial</button>
+
+            <table class="table table-bordered" id="testimonialTable">
+                <thead><tr>
+                    <th>ID</th><th>Name</th><th>Message</th><th>Image</th><th>Status</th><th>Created</th><th>Updated</th><th>Action</th>
+                </tr></thead>
+                <tbody></tbody>
+            </table>
+
+            <!-- Modal -->
+            <div class="modal fade" id="testimonialModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <form id="testimonialForm" enctype="multipart/form-data" class="modal-content">
+                        <div class="modal-header"><h5 class="modal-title" id="testimonialModalLabel">Add Testimonial</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" id="testimonialId" />
+                            <div class="mb-3"><input type="text" name="name" id="testimonialName" class="form-control" placeholder="Name" required></div>
+                            <div class="mb-3"><textarea name="message" id="testimonialMessage" class="form-control" placeholder="Message" required></textarea></div>
+                            <div class="mb-3"><select name="status" id="testimonialStatus" class="form-control">
+                                <option value="pending">Pending</option><option value="approved">Approved</option></select></div>
+                            <div class="mb-3"><input type="file" name="image" id="testimonialImage" class="form-control">
+                                <img id="currentImage" src="" style="max-width:100px;margin-top:10px;display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-success" type="submit">Save</button>
+                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="ad-footer-btm"><p>&copy; 2025 Haritkisan All Rights Reserved.</p></div>
+        </div>
+    </div>
+    <div id="footer"></div>
+</div>
+
+<!-- JS -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script>
+$(function(){
+    /* 1. Session Check */
+    $.get('backend/check_session.php',res=>{ if(res.status!=='success'){ location='login.html'; } });
+
+    /* 2. Load common layouts then init table */
+    const afterLoads=()=>{ $('.loader').fadeOut(); loadTestimonials(); };
+    let loadCount=0,markLoad=()=>{ if(++loadCount===3) afterLoads(); };
+    $('#header').load('layouts/header.html',markLoad);
+    $('#sidebar').load('layouts/sidebar.html',markLoad);
+    $('#footer').load('layouts/footer.html',markLoad);
+
+    /* 3. CRUD functions */
+    function loadTestimonials(){
+        $.post('backend/manage_testimonials.php',{action:'list'},renderTable,'json')
+         .fail(xhr=>alert('Load error: '+xhr.responseText));
+    }
+
+    function renderTable(data){
+        if(!data.success){alert(data.message||'Failed');return;}
+        const tbody=$('#testimonialTable tbody').empty();
+        data.testimonials.forEach(t=>{
+            const img=t.image_url?`<img src="${t.image_url}" style="max-width:80px;">`:'';
+            tbody.append(`<tr>
+                <td>${t.id}</td><td>${t.name}</td><td>${t.message}</td><td>${img}</td>
+                <td>${t.status}</td><td>${t.created_at}</td><td>${t.updated_at}</td>
+                <td>
+                  <button class="btn btn-danger btn-sm delete-btn" data-id="${t.id}">Delete</button>
+                </td></tr>`);
+        });
+    }
+
+    /* 4. Add modal open */
+    $('#addTestimonialBtn').on('click',()=>{
+        $('#testimonialForm')[0].reset();$('#testimonialId').val('');$('#currentImage').hide();
+        $('#testimonialModalLabel').text('Add Testimonial');$('#testimonialModal').modal('show');
+    });
+
+    /* 5. Edit button */
+    $(document).on('click','.edit-btn',function(){
+        const id=$(this).data('id');
+        $.post('backend/manage_testimonials.php',{action:'get',id},d=>{
+            if(!d.success){alert('Fetch failed');return;}
+            const t=d.testimonial;
+            $('#testimonialId').val(t.id);
+            $('#testimonialName').val(t.name);
+            $('#testimonialMessage').val(t.message);
+            $('#testimonialStatus').val(t.status);
+            if(t.image_url){$('#currentImage').attr('src',t.image_url).show();}else{$('#currentImage').hide();}
+            $('#testimonialModalLabel').text('Edit Testimonial');$('#testimonialModal').modal('show');
+        },'json');
+    });
+
+    /* 6. Delete button */
+    $(document).on('click','.delete-btn',function(){
+        if(!confirm('Delete this testimonial?'))return;
+        $.post('backend/manage_testimonials.php',{action:'delete',id:$(this).data('id')},d=>{
+            if(d.success) loadTestimonials(); else alert('Delete failed');
+        },'json');
+    });
+
+    /* 7. Form submit (create/update) */
+    $('#testimonialForm').on('submit',function(e){
+        e.preventDefault();
+        const fd=new FormData(this);
+        const isUpdate=$('#testimonialId').val();
+        fd.append('action',isUpdate?'update':'create');
+        $.ajax({url:'backend/manage_testimonials.php',method:'POST',data:fd,contentType:false,processData:false,dataType:'json'})
+         .done(d=>{ if(d.success){ $('#testimonialModal').modal('hide'); loadTestimonials(); } else alert(d.message||'Error'); })
+         .fail(xhr=>alert('Save error: '+xhr.responseText));
+    });
+});
+</script>
+</body>
+</html>

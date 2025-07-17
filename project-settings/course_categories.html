@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin - Course Categories</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/icofont.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="loader">
+        <div class="spinner">
+            <img src="assets/images/loader.gif" alt="Loading...">
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div id="header"></div>
+        <div id="sidebar"></div>
+
+        <div class="main-content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-wrapper">
+                        <div class="breadcrumb-list">
+                            <ul>
+                                <li><a href="index"><i class="fas fa-home mr-2"></i>Dashboard</a></li>
+                                <li class="active">Course Categories</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Categories Management -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Manage Course Categories</h5>
+                            <button class="btn btn-primary" id="openModalBtn">Add Category</button>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered" id="courseCategoriesTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Category Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="ad-footer-btm">
+                <p>Copyright 2025 © the tradification All Rights Reserved.</p>
+            </div>
+        </div>
+
+        <div id="footer"></div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal fade" id="courseCategoryModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <form id="courseCategoryForm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Course Category</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="courseCategoryId">
+                        <div class="form-group">
+                            <label>Category Name</label>
+                            <input type="text" id="courseCategoryName" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="saveBtn" class="btn btn-primary">Add</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#header').load('layouts/header.html');
+            $('#sidebar').load('layouts/sidebar.html');
+            $('#footer').load('layouts/footer.html');
+            $('.loader').fadeOut();
+
+            // Load all categories
+            function loadCourseCategories() {
+                $.ajax({
+                    url: 'backend/course_category.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (res) {
+                        let tbody = $('#courseCategoriesTable tbody');
+                        tbody.empty();
+                        if (res.status === 'success') {
+                            $.each(res.categories, function (i, cat) {
+                                let row = $('<tr>');
+                                row.append($('<td>').text(cat.id));
+                                row.append($('<td>').text(cat.name));
+                                let actions = $('<td>');
+                                actions.append(`<button class="btn btn-info btn-sm mr-2 editBtn" data-id="${cat.id}" data-name="${cat.name}">Edit</button>`);
+                                actions.append(`<button class="btn btn-danger btn-sm deleteBtn" data-id="${cat.id}">Delete</button>`);
+                                row.append(actions);
+                                tbody.append(row);
+                            });
+                        } else {
+                            Swal.fire('Error', res.message, 'error');
+                        }
+                    },
+                    error: () => Swal.fire('Error', 'Failed to load categories', 'error')
+                });
+            }
+
+            loadCourseCategories();
+
+            // Open Add Modal
+            $('#openModalBtn').on('click', function () {
+                $('#courseCategoryId').val('');
+                $('#courseCategoryName').val('');
+                $('#courseCategoryModal .modal-title').text('Add Course Category');
+                $('#saveBtn').text('Add');
+                $('#courseCategoryModal').modal('show');
+            });
+
+            // Add / Update
+            $('#courseCategoryForm').on('submit', function (e) {
+                e.preventDefault();
+                let id = $('#courseCategoryId').val();
+                let name = $('#courseCategoryName').val().trim();
+
+                if (name === '') {
+                    return Swal.fire('Warning', 'Enter category name', 'warning');
+                }
+
+                let action = id ? 'update' : 'add';
+
+                $.ajax({
+                    url: 'backend/course_category.php?action=' + action,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(id ? { id, name } : { name }),
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status === 'success') {
+                            Swal.fire('Success', res.message, 'success').then(() => {
+                                $('#courseCategoryModal').modal('hide');
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Error', res.message, 'error');
+                        }
+                    },
+                    error: () => Swal.fire('Error', 'Server error', 'error')
+                });
+            });
+
+            // Edit
+            $(document).on('click', '.editBtn', function () {
+                let id = $(this).data('id');
+                let name = $(this).data('name');
+                $('#courseCategoryId').val(id);
+                $('#courseCategoryName').val(name);
+                $('#courseCategoryModal .modal-title').text('Update Course Category');
+                $('#saveBtn').text('Update');
+                $('#courseCategoryModal').modal('show');
+            });
+
+            // Delete
+            $(document).on('click', '.deleteBtn', function () {
+                let id = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will permanently delete the category.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'backend/course_category.php?action=delete',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ id }),
+                            dataType: 'json',
+                            success: function (res) {
+                                if (res.status === 'success') {
+                                    Swal.fire('Deleted!', res.message, 'success').then(() => window.location.reload());
+                                } else {
+                                    Swal.fire('Error', res.message, 'error');
+                                }
+                            },
+                            error: () => Swal.fire('Error', 'Server error', 'error')
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

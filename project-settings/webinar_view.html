@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Webinar Details</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/icofont.min.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="icon" href="assets/images/favicon.png" type="image/png" />
+
+    <style>
+        .webinar-banner {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: cover;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+        .webinar-thumbnail {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+        }
+        .details-table td {
+            vertical-align: middle;
+            padding: 12px 16px;
+        }
+        .details-table th {
+            width: 200px;
+            background-color: #f8f9fa;
+            padding: 12px 16px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div id="header"></div>
+        <div id="sidebar"></div>
+
+        <div class="main-content container mt-4">
+            <div id="webinarBannerContainer"></div>
+
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0" id="webinarName">Webinar Name</h4>
+                            <span class="badge badge-secondary" id="webinarCategory">Category</span>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <img id="webinarThumbnail" class="webinar-thumbnail" alt="Webinar Thumbnail" />
+                            </div>
+
+                            <table class="table table-bordered details-table">
+                                <tbody>
+                                    <tr>
+                                        <th>Short Description</th>
+                                        <td id="shortDescription"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Long Description</th>
+                                        <td id="longDescription"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date</th>
+                                        <td id="webinarDate"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Time</th>
+                                        <td id="webinarTime"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Duration</th>
+                                        <td><span id="hours"></span> hour(s)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Price</th>
+                                        <td>₹ <span id="price"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Webinar Link</th>
+                                        <td>
+                                            <a id="webinarLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                Join Webinar
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">Webinar Comments</h4>
+                            <button class="btn btn-primary btn-sm" id="openCommentModalBtn">Add Comment</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="commentMessage" class="mb-3"></div>
+                            <table class="table table-bordered" id="commentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Image</th>
+                                        <th>Comment</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filled by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comment Modal -->
+            <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form id="commentForm" enctype="multipart/form-data">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="commentModalLabel">Add / Edit Webinar Comment</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="commentId" />
+                                <div class="form-group">
+                                    <label for="commentName">Name</label>
+                                    <input type="text" class="form-control" id="commentName" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="commentMessage">comment</label>
+                                    <textarea class="form-control" id="commentMessage" rows="3" required></textarea>
+                                </div>
+                             
+                                <div class="form-group">
+                                    <label for="commentImage">Image</label>
+                                    <input type="file" class="form-control" id="commentImage" accept="image/*" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="saveCommentBtn" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelCommentBtn">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer" class="mt-5"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/webinar_view_comments.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#header').load('layouts/header.html');
+            $('#sidebar').load('layouts/sidebar.html');
+            $('#footer').load('layouts/footer.html');
+
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+
+            const webinarId = getQueryParam('id');
+            if (!webinarId) {
+                alert('No webinar ID specified.');
+                return;
+            }
+
+            $.ajax({
+                url: 'backend/webinar.php?action=list',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === 'success') {
+                        const webinar = response.webinars.find(w => w.id == webinarId);
+                        if (!webinar) {
+                            alert('Webinar not found.');
+                            return;
+                        }
+
+                        if (webinar.banner) {
+                            $('#webinarBannerContainer').html('<img src="backend/uploads/' + webinar.banner + '" alt="Banner" class="webinar-banner">');
+                        }
+
+                        $('#webinarName').text(webinar.name);
+                        $('#webinarCategory').text(webinar.category_name || '');
+                        $('#webinarThumbnail').attr('src', webinar.thumbnail ? 'backend/uploads/' + webinar.thumbnail : 'assets/images/default.png');
+                        $('#shortDescription').text(webinar.short_description || '');
+                        $('#longDescription').text(webinar.long_description || '');
+                        $('#webinarDate').text(webinar.webinar_date || '');
+                        $('#webinarTime').text(webinar.webinar_time || '');
+                        $('#hours').text(webinar.hours || 'N/A');
+                        $('#price').text(webinar.price || 'Free');
+                        $('#webinarLink').attr('href', webinar.webinar_link || '#');
+                    } else {
+                        alert('Failed to load webinar details: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error loading webinar details.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

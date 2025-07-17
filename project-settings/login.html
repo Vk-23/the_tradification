@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="zxx">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+    <title>SplashDash</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="MobileOptimized" content="320">
+    <!--Start Style -->
+    <link rel="stylesheet" type="text/css" href="assets/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/auth.css">
+    <!-- Favicon Link -->
+    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+    <div class="ad-auth-wrapper">
+        <div class="ad-auth-box">
+            <div class="row align-items-center">
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <div class="ad-auth-img">
+                        <img src="assets/images/auth-img1.png" alt="" />
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <div class="ad-auth-content">
+                        <form id="adminLoginForm">
+                            <a href="index.html" class="ad-auth-logo">
+                                <img src="assets/images/logo2.png" alt="" />
+                            </a>
+                            <h2><span class="primary">Admin,</span>Welcome!</h2>
+                            <p>Please Enter Your Credentials Below to Continue</p>
+                            <div class="ad-auth-form">
+                                <div class="ad-auth-feilds mb-30">
+<input type="text" name="email" placeholder="Email Address" class="ad-input" required autocomplete="username" />
+
+                                </div>
+                                <div class="ad-auth-feilds">
+<input type="password" name="password" placeholder="Password" class="ad-input" required autocomplete="current-password" />
+
+                                </div>
+                            </div>
+                            <div class="ad-auth-btn">
+                                <button type="submit" class="ad-btn ad-login-member">Login</button>
+                            </div>
+                            <p class="ad-register-text">Don't have access? <a href="contact_admin.html">Contact Admin</a></p>
+                        </form>
+                        
+                        <div id="adminLoginMessage" class="ad-notifications"></div>
+                        
+<script>
+$("#adminLoginForm").submit(function(event) {
+    event.preventDefault();
+    $.ajax({
+        type: "POST",
+        url: "backend/admin_login.php", // <-- sends to this PHP script
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(response) {
+            if (response.status === "success") {
+                window.location.href = "index.html";
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR.responseText); // This helps debug
+            alert("AJAX error: " + textStatus + " : " + errorThrown);
+        }
+    });
+});
+</script>
+
+
+                        
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+</body>
+</html>

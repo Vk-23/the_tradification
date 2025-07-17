@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <title>Courses</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="description" content="Courses List">
+    <meta name="keywords" content="courses, online, education">
+    <meta name="author" content="the tradification">
+    <meta name="MobileOptimized" content="320">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="assets/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/icofont.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+
+    <style>
+        .course-banner {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        .course-thumbnail {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        .modal-lg {
+            max-width: 900px;
+        }
+    </style>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <div class="loader">
+        <div class="spinner">
+            <img src="assets/images/loader.gif" alt="Loading...">
+        </div>
+    </div>
+    
+    <!-- Main Body -->
+    <div class="page-wrapper">
+        
+        <!-- Header -->
+        <div id="header"></div>
+        
+        <!-- Sidebar -->
+        <div id="sidebar"></div>
+        
+        <!-- Main Content -->
+        <div class="page-wrapper">
+            <div class="main-content">
+                 <div class="row">
+                    <div class="colxl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-title-wrapper">
+                          
+                            <div class="breadcrumb-list">
+                                <ul>
+                                    <li class="breadcrumb-link">
+                                        <a href="index"><i class="fas fa-home mr-2"></i>Dashboard</a>
+                                    </li>
+                                    <li class="breadcrumb-link active">Courses</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Start -->
+              
+                <div id="bannerContainer"></div>
+
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Manage Courses</h5>
+                    <button id="openAddModalBtn" class="btn btn-primary mb-3">Add Course</button>
+                </div>
+                <div id="coursesContainer"></div>
+
+                <div class="ad-footer-btm">
+                    <p>Copyright 2025 © the tradification All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div id="footer"></div>
+    </div>
+
+    <!-- Add/Update Course Modal -->
+    <div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="courseModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <form id="courseForm" enctype="multipart/form-data">
+            <div class="modal-header">
+              <h5 class="modal-title" id="courseModalLabel">Add / Update Course</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="courseId" value="">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="categorySelect">Course Category</label>
+                        <select id="categorySelect" class="form-control" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="courseName">Name</label>
+                        <input type="text" id="courseName" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="thumbnail">Thumbnail (choose image file)</label>
+                    <input type="file" id="thumbnail" class="form-control" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="shortDescription">Short Description</label>
+                    <textarea id="shortDescription" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="longDescription">Long Description</label>
+                    <textarea id="longDescription" class="form-control"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="lectures">Lectures</label>
+                        <input type="number" id="lectures" class="form-control" min="0">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="level">Level</label>
+                        <select id="level" class="form-control" required>
+                            <option value="">Select Level</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" id="addBtn" class="btn btn-primary">Add</button>
+              <button type="button" id="updateBtn" class="btn btn-success" style="display:none;">Update</button>
+              <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Check session status via AJAX
+            $.get('project-settings/backend//check_session.php', function(response) {
+                if (response.status !== 'success') {
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Load header, sidebar, and footer dynamically
+            $('#header').load('layouts/header.html', function() {
+                loadCategories();
+                loadCourses();
+            });
+            $('#sidebar').load('layouts/sidebar.html');
+            $('#footer').load('layouts/footer.html');
+            
+            $('.loader').fadeOut();
+
+            function loadCategories() {
+                $.ajax({
+                    url: 'project-settings/backend//course_category.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var select = $('#categorySelect');
+                            select.empty();
+                            select.append('<option value="">Select Category</option>');
+                            response.categories.forEach(function(category) {
+                                select.append('<option value="' + category.id + '">' + category.name + '</option>');
+                            });
+                        } else {
+                            Swal.fire('Error', 'Failed to load categories: ' + response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Error loading categories', 'error');
+                    }
+                });
+            }
+
+            function loadCourses() {
+                $.ajax({
+                    url: 'project-settings/backend//course.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var courses = response.courses;
+                            var bannerHtml = '';
+                            var coursesHtml = '';
+
+                            // Remove banner image display as per user request
+                            $('#bannerContainer').html('');
+
+                            if (courses.length === 0) {
+                                coursesHtml = '<p>No courses available.</p>';
+                            } else {
+                                coursesHtml = '<table class="table table-bordered table-striped">';
+                                coursesHtml += '<thead><tr><th>Thumbnail</th><th>Name</th><th>Category</th><th>Short Description</th><th>Long Description</th><th>Lectures</th><th>Level</th><th>Banner Active</th><th>Actions</th></tr></thead><tbody>';
+                                courses.forEach(function(course) {
+                                    coursesHtml += '<tr>';
+                                    coursesHtml += '<td>';
+                                    if (course.thumbnail) {
+                                        coursesHtml += '<img src="project-settings/backend//uploads/' + course.thumbnail + '" alt="Thumbnail" class="course-thumbnail">';
+                                    } else {
+                                        coursesHtml += '<img src="assets/images/default.png" alt="Thumbnail" class="course-thumbnail">';
+                                    }
+                                    coursesHtml += '</td>';
+                                    coursesHtml += '<td>' + course.name + '</td>';
+                                    coursesHtml += '<td>' + (course.category_name || '') + '</td>';
+                                    coursesHtml += '<td>' + (course.short_description || '') + '</td>';
+                                    coursesHtml += '<td>' + (course.long_description || '') + '</td>';
+                                    coursesHtml += '<td>' + (course.lectures || '') + '</td>';
+                                    coursesHtml += '<td>' + (course.level || '') + '</td>';
+                                // Remove price column as per user request
+                                // coursesHtml += '<td>Rs ' + (course.price || '') + '</td>';
+                                coursesHtml += '<td><input type="checkbox" class="bannerActiveToggle" data-id="' + course.id + '"' + (course.banner_active == 1 ? ' checked' : '') + '></td>';
+                                    coursesHtml += '<td>';
+                                    coursesHtml += '<button class="btn btn-sm btn-info editBtn" data-id="' + course.id + '">Edit</button> ';
+                                    coursesHtml += '<button class="btn btn-sm btn-danger deleteBtn" data-id="' + course.id + '">Delete</button>';
+                                    coursesHtml += '</td>';
+                                    coursesHtml += '</tr>';
+                                });
+                                coursesHtml += '</tbody></table>';
+                            }
+
+                            $('#bannerContainer').html(bannerHtml);
+                            $('#coursesContainer').html(coursesHtml);
+
+                            // Add event listeners for banner active toggle
+                            $('.bannerActiveToggle').off('change').on('change', function() {
+                                var id = $(this).data('id');
+                                var banner_active = $(this).is(':checked') ? 1 : 0;
+                                $.ajax({
+                                    url: 'project-settings/backend//course.php?action=update_status',
+                                    method: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({ id: id, banner_active: banner_active }),
+                                    dataType: 'json',
+                                    success: function(response) {
+                                        if (response.status !== 'success') {
+                                            Swal.fire('Error', 'Failed to update banner active status: ' + response.message, 'error');
+                                        } else {
+                                            loadCourses();
+                                        }
+                                    },
+                                    error: function() {
+                                        Swal.fire('Error', 'Error updating banner active status', 'error');
+                                    }
+                                });
+                            });
+                        } else {
+                            $('#coursesContainer').html('<p>Failed to load courses: ' + response.message + '</p>');
+                        }
+                    },
+                    error: function() {
+                        $('#coursesContainer').html('<p>Error loading courses.</p>');
+                    }
+                });
+            }
+
+            $('#openAddModalBtn').on('click', function() {
+                clearForm();
+                $('#courseModalLabel').text('Add Course');
+                $('#addBtn').show();
+                $('#updateBtn').hide();
+                $('#courseModal').modal('show');
+            });
+
+            function clearForm() {
+                $('#courseId').val('');
+                $('#categorySelect').val('');
+                $('#courseName').val('');
+                $('#thumbnail').val('');
+                $('#shortDescription').val('');
+                $('#longDescription').val('');
+                $('#lectures').val('');
+                $('#level').val('');
+                $('#price').val('');
+            }
+
+            $('#addBtn').on('click', function(e) {
+                e.preventDefault();
+                var formData = new FormData();
+                formData.append('category_id', $('#categorySelect').val());
+                formData.append('name', $('#courseName').val());
+                var thumbnailFile = $('#thumbnail')[0].files[0];
+                if (thumbnailFile) {
+                    formData.append('thumbnail', thumbnailFile);
+                }
+                formData.append('short_description', $('#shortDescription').val());
+                formData.append('long_description', $('#longDescription').val());
+                formData.append('lectures', $('#lectures').val());
+                formData.append('level', $('#level').val());
+                formData.append('price', $('#price').val());
+
+                $.ajax({
+                    url: 'project-settings/backend//course.php?action=add',
+                    method: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('#courseModal').modal('hide');
+                            Swal.fire('Success', response.message, 'success').then(() => {
+                                loadCourses();
+                            });
+                        } else {
+                            Swal.fire('Error', 'Failed to add course: ' + response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Error adding course', 'error');
+                    }
+                });
+            });
+
+            $('#updateBtn').on('click', function(e) {
+                e.preventDefault();
+                var formData = new FormData();
+                formData.append('id', $('#courseId').val());
+                formData.append('category_id', $('#categorySelect').val());
+                formData.append('name', $('#courseName').val());
+                var thumbnailFile = $('#thumbnail')[0].files[0];
+                if (thumbnailFile) {
+                    formData.append('thumbnail', thumbnailFile);
+                }
+                formData.append('short_description', $('#shortDescription').val());
+                formData.append('long_description', $('#longDescription').val());
+                formData.append('lectures', $('#lectures').val());
+                formData.append('level', $('#level').val());
+                formData.append('price', $('#price').val());
+
+                $.ajax({
+                    url: 'project-settings/backend//course.php?action=update',
+                    method: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('#courseModal').modal('hide');
+                            Swal.fire('Success', response.message, 'success').then(() => {
+                                loadCourses();
+                            });
+                        } else {
+                            Swal.fire('Error', 'Failed to update course: ' + response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Error updating course', 'error');
+                    }
+                });
+            });
+
+            $('#cancelBtn').on('click', function() {
+                $('#courseModal').modal('hide');
+            });
+
+            $(document).on('click', '.editBtn', function() {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: 'project-settings/backend//course.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var course = response.courses.find(c => c.id == id);
+                            if (course) {
+                                $('#courseId').val(course.id);
+                                $('#categorySelect').val(course.category_id);
+                                $('#courseName').val(course.name);
+                                $('#thumbnail').val('');
+                                $('#shortDescription').val(course.short_description);
+                                $('#longDescription').val(course.long_description);
+                                $('#lectures').val(course.lectures);
+                                $('#level').val(course.level);
+                                $('#price').val(course.price);
+                                $('#courseModalLabel').text('Update Course');
+                                $('#addBtn').hide();
+                                $('#updateBtn').show();
+                                $('#cancelBtn').show();
+                                $('#courseModal').modal('show');
+                            }
+                        } else {
+                            Swal.fire('Error', 'Failed to load course for editing: ' + response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Error loading course for editing', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.deleteBtn', function() {
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'project-settings/backend//course.php?action=delete',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ id: id }),
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    Swal.fire('Deleted!', response.message, 'success').then(() => {
+                                        loadCourses();
+                                    });
+                                } else {
+                                    Swal.fire('Error', 'Failed to delete course: ' + response.message, 'error');
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Error', 'Error deleting course', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

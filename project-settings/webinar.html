@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <title>Webinars</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="description" content="Webinars List">
+    <meta name="keywords" content="webinars, online, courses">
+    <meta name="author" content="the tradification">
+    <meta name="MobileOptimized" content="320">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="assets/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/icofont.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+
+    <style>
+        .webinar-banner {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        .webinar-thumbnail {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        .modal-lg {
+            max-width: 900px;
+        }
+    </style>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <div class="loader">
+        <div class="spinner">
+            <img src="assets/images/loader.gif" alt="Loading...">
+        </div>
+    </div>
+    
+    <!-- Main Body -->
+    <div class="page-wrapper">
+        
+        <!-- Header -->
+        <div id="header"></div>
+        
+        <!-- Sidebar -->
+        <div id="sidebar"></div>
+        
+        <!-- Main Content -->
+        <div class="page-wrapper">
+            <div class="main-content">
+                 <div class="row">
+                    <div class="colxl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-title-wrapper">
+                          
+                            <div class="breadcrumb-list">
+                                <ul>
+                                    <li class="breadcrumb-link">
+                                        <a href="index"><i class="fas fa-home mr-2"></i>Dashboard</a>
+                                    </li>
+                                    <li class="breadcrumb-link active">Webinars</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Start -->
+              
+                <div id="bannerContainer"></div>
+
+  <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Manage Webinars</h5>
+                <button id="openAddModalBtn" class="btn btn-primary mb-3">Add Webinar</button>
+                        </div>
+                <div id="webinarsContainer"></div>
+
+                <div class="ad-footer-btm">
+                    <p>Copyright 2025 © the tradification All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div id="footer"></div>
+    </div>
+
+    <!-- Add/Update Webinar Modal -->
+    <div class="modal fade" id="webinarModal" tabindex="-1" role="dialog" aria-labelledby="webinarModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <form id="webinarForm" enctype="multipart/form-data">
+            <div class="modal-header">
+              <h5 class="modal-title" id="webinarModalLabel">Add / Update Webinar</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="webinarId" value="">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="categorySelect">Category</label>
+                        <select id="categorySelect" class="form-control" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="webinarName">Name</label>
+                        <input type="text" id="webinarName" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="thumbnail">Thumbnail (choose image file)</label>
+                    <input type="file" id="thumbnail" class="form-control" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="shortDescription">Short Description</label>
+                    <textarea id="shortDescription" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="longDescription">Long Description</label>
+                    <textarea id="longDescription" class="form-control"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="webinarDate">Date</label>
+                        <input type="date" id="webinarDate" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="webinarTime">Time</label>
+                        <input type="time" id="webinarTime" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="hours">Hours</label>
+                        <input type="number" id="hours" class="form-control" min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="price">Price (Rs)</label>
+                        <input type="number" id="price" class="form-control" min="0" step="0.01">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="webinarLink">Webinar Link</label>
+                        <input type="url" id="webinarLink" class="form-control" placeholder="https://example.com">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" id="addBtn" class="btn btn-primary">Add</button>
+              <button type="button" id="updateBtn" class="btn btn-success" style="display:none;">Update</button>
+              <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Check session status via AJAX
+            $.get('backend/check_session.php', function(response) {
+                if (response.status !== 'success') {
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Load header, sidebar, and footer dynamically
+            $('#header').load('layouts/header.html', function() {
+                loadCategories();
+                loadWebinars();
+            });
+            $('#sidebar').load('layouts/sidebar.html');
+            $('#footer').load('layouts/footer.html');
+            
+            $('.loader').fadeOut();
+
+            function loadCategories() {
+                $.ajax({
+                    url: 'backend/webinar_category.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var select = $('#categorySelect');
+                            select.empty();
+                            select.append('<option value="">Select Category</option>');
+                            response.categories.forEach(function(category) {
+                                select.append('<option value="' + category.id + '">' + category.name + '</option>');
+                            });
+                        } else {
+                            Swal.fire('Error', 'Failed to load categories: ' + response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Error loading categories', 'error');
+                    }
+                });
+            }
+
+            function loadWebinars() {
+                $.ajax({
+                    url: 'backend/webinar.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var webinars = response.webinars;
+                            var bannerHtml = '';
+                            var webinarsHtml = '';
+
+                            var activeBanner = webinars.find(w => w.banner_active == 1 && w.banner);
+                            if (activeBanner) {
+                                bannerHtml = '<img src="backend/uploads/' + activeBanner.banner + '" alt="Banner" class="webinar-banner">';
+                                $('#bannerContainer').html(bannerHtml);
+                            } else {
+                                $('#bannerContainer').html('');
+                            }
+
+                            if (webinars.length === 0) {
+                                webinarsHtml = '<p>No webinars available.</p>';
+                            } else {
+                                webinarsHtml = '<table class="table table-bordered table-striped">';
+                                webinarsHtml += '<thead><tr><th>Thumbnail</th><th>Name</th><th>Category</th><th>Short Description</th><th>Date</th><th>Time</th><th>Duration (hours)</th><th>Price (Rs)</th><th>Banner Active</th><th>Link</th><th>Actions</th></tr></thead><tbody>';
+                                webinars.forEach(function(webinar) {
+                                    webinarsHtml += '<tr>';
+                                    webinarsHtml += '<td>';
+                                    if (webinar.thumbnail) {
+                                        webinarsHtml += '<img src="backend/uploads/' + webinar.thumbnail + '" alt="Thumbnail" class="webinar-thumbnail">';
+                                    } else {
+                                        webinarsHtml += '<img src="assets/images/default.png" alt="Thumbnail" class="webinar-thumbnail">';
+                                    }
+                                    webinarsHtml += '</td>';
+                                    webinarsHtml += '<td>' + webinar.name + '</td>';
+                                    webinarsHtml += '<td>' + (webinar.category_name || '') + '</td>';
+                                    webinarsHtml += '<td>' + (webinar.short_description || '') + '</td>';
+    webinarsHtml += '<td>' + formatDate(webinar.webinar_date) + '</td>';
+                                    webinarsHtml += '<td>' + (webinar.webinar_time || '') + '</td>';
+                                    webinarsHtml += '<td>' + (webinar.hours || '') + '</td>';
+                                    webinarsHtml += '<td>Rs ' + (webinar.price || '') + '</td>';
+                                    webinarsHtml += '<td><input type="checkbox" class="bannerActiveToggle" data-id="' + webinar.id + '"' + (webinar.banner_active == 1 ? ' checked' : '') + '></td>';
+                                    webinarsHtml += '<td><a href="' + (webinar.webinar_link || '#') + '" target="_blank" class="btn btn-primary btn-sm">Join</a></td>';
+                                    webinarsHtml += '<td>';
+                                    webinarsHtml += '<a href="webinar_view.html?id=' + webinar.id + '" class="btn btn-sm btn-primary mr-1">View</a>';
+                                    webinarsHtml += '<button class="btn btn-sm btn-info editBtn" data-id="' + webinar.id + '">Edit</button> ';
+                                    webinarsHtml += '<button class="btn btn-sm btn-danger deleteBtn" data-id="' + webinar.id + '">Delete</button>';
+                                    webinarsHtml += '</td>';
+                                    webinarsHtml += '</tr>';
+                                });
+                                webinarsHtml += '</tbody></table>';
+                            }
+
+                            $('#bannerContainer').html(bannerHtml);
+            $('#webinarsContainer').html(webinarsHtml);
+// Format webinar_date as DD-MM-YY
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = String(date.getFullYear()); // Get last 2 digits
+    return `${day}-${month}-${year}`;
+}
+
+            // Add event listeners for banner active toggle
+            $('.bannerActiveToggle').off('change').on('change', function() {
+                var id = $(this).data('id');
+                var banner_active = $(this).is(':checked') ? 1 : 0;
+                $.ajax({
+                    url: 'backend/webinar.php?action=update_status',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: id, banner_active: banner_active }),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status !== 'success') {
+                            Swal.fire('Error', 'Failed to update banner active status: ' + response.message, 'error');
+                        } else {
+                            loadWebinars();
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Error updating banner active status', 'error');
+                    }
+                });
+            });
+
+            // Add event listeners for active toggle
+            $('.activeToggle').off('change').on('change', function() {
+                var id = $(this).data('id');
+                var active = $(this).is(':checked') ? 1 : 0;
+                $.ajax({
+                    url: 'backend/webinar.php?action=update_status',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: id, active: active }),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status !== 'success') {
+                            Swal.fire('Error', 'Failed to update active status: ' + response.message, 'error');
+                        } else {
+                            loadWebinars();
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Error updating active status', 'error');
+                    }
+                });
+            });
+                        } else {
+                            $('#webinarsContainer').html('<p>Failed to load webinars: ' + response.message + '</p>');
+                        }
+                    },
+                    error: function() {
+                        $('#webinarsContainer').html('<p>Error loading webinars.</p>');
+                    }
+                });
+            }
+
+            $('#openAddModalBtn').on('click', function() {
+                clearForm();
+                $('#webinarModalLabel').text('Add Webinar');
+                $('#addBtn').show();
+                $('#updateBtn').hide();
+                $('#webinarModal').modal('show');
+            });
+
+            function clearForm() {
+                $('#webinarId').val('');
+                $('#categorySelect').val('');
+                $('#webinarName').val('');
+                $('#thumbnail').val('');
+                $('#shortDescription').val('');
+                $('#longDescription').val('');
+                $('#webinarDate').val('');
+                $('#webinarTime').val('');
+                $('#hours').val('');
+                $('#price').val('');
+                $('#webinarLink').val('');
+            }
+
+            $('#addBtn').on('click', function(e) {
+                e.preventDefault();
+                var formData = new FormData();
+                formData.append('category_id', $('#categorySelect').val());
+                formData.append('name', $('#webinarName').val());
+                var thumbnailFile = $('#thumbnail')[0].files[0];
+                if (thumbnailFile) {
+                    formData.append('thumbnail', thumbnailFile);
+                }
+                formData.append('short_description', $('#shortDescription').val());
+                formData.append('long_description', $('#longDescription').val());
+                formData.append('webinar_date', $('#webinarDate').val());
+                formData.append('webinar_time', $('#webinarTime').val());
+                formData.append('hours', $('#hours').val());
+                formData.append('price', $('#price').val());
+                formData.append('webinar_link', $('#webinarLink').val());
+
+                $.ajax({
+                    url: 'backend/webinar.php?action=add',
+                    method: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    dataType: 'json',
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    $('#webinarModal').modal('hide');
+                                    Swal.fire('Success', response.message, 'success').then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Error', 'Failed to add webinar: ' + response.message, 'error');
+                                }
+                            },
+                    error: function() {
+                        Swal.fire('Error', 'Error adding webinar', 'error');
+                    }
+                });
+            });
+
+            $('#updateBtn').on('click', function(e) {
+                e.preventDefault();
+                var formData = new FormData();
+                formData.append('id', $('#webinarId').val());
+                formData.append('category_id', $('#categorySelect').val());
+                formData.append('name', $('#webinarName').val());
+                var thumbnailFile = $('#thumbnail')[0].files[0];
+                if (thumbnailFile) {
+                    formData.append('thumbnail', thumbnailFile);
+                }
+                formData.append('short_description', $('#shortDescription').val());
+                formData.append('long_description', $('#longDescription').val());
+                formData.append('webinar_date', $('#webinarDate').val());
+                formData.append('webinar_time', $('#webinarTime').val());
+                formData.append('hours', $('#hours').val());
+                formData.append('price', $('#price').val());
+                formData.append('webinar_link', $('#webinarLink').val());
+
+                $.ajax({
+                    url: 'backend/webinar.php?action=update',
+                    method: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    dataType: 'json',
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    $('#webinarModal').modal('hide');
+                                    Swal.fire('Success', response.message, 'success').then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Error', 'Failed to update webinar: ' + response.message, 'error');
+                                }
+                            },
+                    error: function() {
+                        Swal.fire('Error', 'Error updating webinar', 'error');
+                    }
+                });
+            });
+
+            $('#cancelBtn').on('click', function() {
+                $('#webinarModal').modal('hide');
+            });
+
+            $(document).on('click', '.editBtn', function() {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: 'backend/webinar.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            var webinar = response.webinars.find(w => w.id == id);
+                            if (webinar) {
+                                $('#webinarId').val(webinar.id);
+                                $('#categorySelect').val(webinar.category_id);
+                                $('#webinarName').val(webinar.name);
+                                $('#thumbnail').val('');
+                                $('#shortDescription').val(webinar.short_description);
+                                $('#longDescription').val(webinar.long_description);
+                                $('#webinarDate').val(webinar.webinar_date);
+                                $('#webinarTime').val(webinar.webinar_time);
+                                $('#hours').val(webinar.hours);
+                                $('#price').val(webinar.price);
+                                $('#webinarLink').val(webinar.webinar_link);
+                                $('#webinarModalLabel').text('Update Webinar');
+                                $('#addBtn').hide();
+                                $('#updateBtn').show();
+                                $('#webinarModal').modal('show');
+                            }
+                        } else {
+                            Swal.fire('Error', 'Failed to load webinar for editing: ' + response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Error loading webinar for editing', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.deleteBtn', function() {
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'backend/webinar.php?action=delete',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ id: id }),
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    Swal.fire('Deleted!', response.message, 'success').then(() => {
+                                        loadWebinars();
+                                    });
+                                } else {
+                                    Swal.fire('Error', 'Failed to delete webinar: ' + response.message, 'error');
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Error', 'Error deleting webinar', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

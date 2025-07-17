@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <title>Admin Panel</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" type="text/css" href="assets/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/icofont.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="loader">
+        <div class="spinner">
+            <img src="assets/images/loader.gif" alt="Loading...">
+        </div>
+    </div>
+
+    <!-- Page Wrapper -->
+    <div class="page-wrapper">
+        <div id="header"></div>
+        <div id="sidebar"></div>
+
+        <div class="main-content">
+            <!-- Page Title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-wrapper">
+                        <div class="breadcrumb-list">
+                            <ul>
+                                <li><a href="index"><i class="fas fa-home mr-2"></i>Dashboard</a></li>
+                                <li class="active">Webinar Categories</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Management -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Manage Webinar Categories</h5>
+                            <button type="button" class="btn btn-primary" id="openModalBtn">Add Category</button>
+                        </div>
+                        
+                        <div class="card-body">
+                            <table class="table table-bordered" id="categoriesTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Category Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filled by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="ad-footer-btm">
+                <p>Copyright 2025 © the tradification All Rights Reserved.</p>
+            </div>
+        </div>
+
+        <div id="footer"></div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="categoryForm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="categoryId">
+                        <div class="form-group">
+                            <label for="categoryName">Category Name</label>
+                            <input type="text" class="form-control" id="categoryName" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="saveBtn" class="btn btn-primary">Add</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelBtn">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Check login session
+            $.get('backend/check_session.php', function (response) {
+                if (response.status !== 'success') {
+                    window.location.href = 'login.html';
+                }
+            });
+
+            $('#header').load('layouts/header.html');
+            $('#sidebar').load('layouts/sidebar.html');
+            $('#footer').load('layouts/footer.html');
+            $('.loader').fadeOut();
+
+            // Load categories
+            function loadCategories() {
+                $.ajax({
+                    url: 'backend/webinar_category.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            var tbody = $('#categoriesTable tbody');
+                            tbody.empty();
+                            $.each(response.categories, function (i, category) {
+                                var row = $('<tr>');
+                                row.append($('<td>').text(category.id));
+                                row.append($('<td>').text(category.name));
+                                var actions = $('<td>');
+                                actions.append('<button class="btn btn-sm btn-info editBtn mr-2" data-id="' + category.id + '" data-name="' + category.name + '">Edit</button>');
+                                actions.append('<button class="btn btn-sm btn-danger deleteBtn" data-id="' + category.id + '">Delete</button>');
+                                row.append(actions);
+                                tbody.append(row);
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Failed to load categories.', 'error');
+                    }
+                });
+            }
+
+            loadCategories();
+
+            // Open Add Modal
+            $('#openModalBtn').on('click', function () {
+                $('#categoryId').val('');
+                $('#categoryName').val('');
+                $('#categoryModalLabel').text('Add Category');
+                $('#saveBtn').text('Add');
+                $('#categoryModal').modal('show');
+            });
+
+            // Add/Update Submit
+            $('#categoryForm').on('submit', function (e) {
+                e.preventDefault();
+                var id = $('#categoryId').val();
+                var name = $('#categoryName').val().trim();
+                if (name === '') {
+                    Swal.fire('Warning', 'Please enter a category name', 'warning');
+                    return;
+                }
+
+                var action = id ? 'update' : 'add';
+                var payload = id ? { id, name } : { name };
+
+                $.ajax({
+                    url: 'backend/webinar_category.php?action=' + action,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload),
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                action === 'add' ? 'Added!' : 'Updated!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                $('#categoryModal').modal('hide');
+                                loadCategories();
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Something went wrong', 'error');
+                    }
+                });
+            });
+
+            // Edit Button Click
+            $(document).on('click', '.editBtn', function () {
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+
+                $('#categoryId').val(id);
+                $('#categoryName').val(name);
+                $('#categoryModalLabel').text('Update Category');
+                $('#saveBtn').text('Update');
+                $('#categoryModal').modal('show');
+            });
+
+            // Delete Button Click
+            $(document).on('click', '.deleteBtn', function () {
+                var id = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'backend/webinar_category.php?action=delete',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ id: id }),
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    Swal.fire('Deleted!', response.message, 'success').then(() => {
+                                        loadCategories();
+                                    });
+                                } else {
+                                    Swal.fire('Error', response.message, 'error');
+                                }
+                            },
+                            error: function () {
+                                Swal.fire('Error', 'Failed to delete category.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

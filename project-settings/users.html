@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin - Users Management</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/icofont.min.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="loader">
+        <div class="spinner">
+            <img src="assets/images/loader.gif" alt="Loading..." />
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div id="header"></div>
+        <div id="sidebar"></div>
+
+        <div class="main-content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-wrapper">
+                        <div class="breadcrumb-list">
+                            <ul>
+                                <li><a href="index"><i class="fas fa-home mr-2"></i>Dashboard</a></li>
+                                <li class="active">Users Management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Management -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Manage Users</h5>
+                            <button class="btn btn-primary" id="openModalBtn">Add User</button>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered" id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone No</th>
+                                        <th>Address</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Filled by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="ad-footer-btm">
+                <p>Copyright 2025 © the tradification All Rights Reserved.</p>
+            </div>
+        </div>
+
+        <div id="footer"></div>
+    </div>
+
+    <!-- User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="userForm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="userModalLabel">Add User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="userId" />
+                        <div class="form-group">
+                            <label for="userName">Name</label>
+                            <input type="text" class="form-control" id="userName" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="userEmail">Email</label>
+                            <input type="email" class="form-control" id="userEmail" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="userPhone">Phone No</label>
+                            <input type="text" class="form-control" id="userPhone" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="userPassword">Password</label>
+                            <input type="password" class="form-control" id="userPassword" />
+                        </div>
+                        <div class="form-group">
+                            <label for="userAddress">Address</label>
+                            <textarea class="form-control" id="userAddress" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="saveBtn" class="btn btn-primary">Add</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelBtn">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#header').load('layouts/header.html');
+            $('#sidebar').load('layouts/sidebar.html');
+            $('#footer').load('layouts/footer.html');
+            $('.loader').fadeOut();
+
+            function loadUsers() {
+                $.ajax({
+                    url: 'backend/users.php?action=list',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            var tbody = $('#usersTable tbody');
+                            tbody.empty();
+                            $.each(response.users, function (i, user) {
+                                var row = $('<tr>');
+                                row.append($('<td>').text(user.id));
+                                row.append($('<td>').text(user.name));
+                                row.append($('<td>').text(user.email));
+                                row.append($('<td>').text(user.phone));
+                                row.append($('<td>').text(user.address));
+                                var actions = $('<td>');
+                                actions.append('<button class="btn btn-sm btn-info editBtn mr-2" data-id="' + user.id + '" data-name="' + user.name + '" data-email="' + user.email + '" data-phone="' + user.phone + '" data-address="' + user.address + '">Edit</button>');
+                                actions.append('<button class="btn btn-sm btn-danger deleteBtn" data-id="' + user.id + '">Delete</button>');
+                                row.append(actions);
+                                tbody.append(row);
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Failed to load users.', 'error');
+                    }
+                });
+            }
+
+            loadUsers();
+
+            $('#openModalBtn').on('click', function () {
+                $('#userId').val('');
+                $('#userName').val('');
+                $('#userEmail').val('');
+                $('#userPhone').val('');
+                $('#userPassword').val('');
+                $('#userPassword').prop('required', true);
+                $('#userAddress').val('');
+                $('#userModalLabel').text('Add User');
+                $('#saveBtn').text('Add');
+                $('#userModal').modal('show');
+            });
+
+            $('#userForm').on('submit', function (e) {
+                e.preventDefault();
+                var id = $('#userId').val();
+                var name = $('#userName').val().trim();
+                var email = $('#userEmail').val().trim();
+                var phone = $('#userPhone').val().trim();
+                var password = $('#userPassword').val();
+                var address = $('#userAddress').val().trim();
+
+                if (!name || !email || !phone || !address || (id ? false : !password)) {
+                    Swal.fire('Warning', 'Please fill all required fields', 'warning');
+                    return;
+                }
+
+                var action = id ? 'update' : 'add';
+                var payload = id ? { id, name, email, phone, password, address } : { name, email, phone, password, address };
+
+                $.ajax({
+                    url: 'backend/users.php?action=' + action,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload),
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            Swal.fire(action === 'add' ? 'Added!' : 'Updated!', response.message, 'success').then(function () {
+                                $('#userModal').modal('hide');
+                                loadUsers();
+                            });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Something went wrong', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.editBtn', function () {
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var email = $(this).data('email');
+                var phone = $(this).data('phone');
+                var address = $(this).data('address');
+
+                $('#userId').val(id);
+                $('#userName').val(name);
+                $('#userEmail').val(email);
+                $('#userPhone').val(phone);
+                $('#userPassword').val('');
+                $('#userPassword').prop('required', false);
+                $('#userAddress').val(address);
+                $('#userModalLabel').text('Update User');
+                $('#saveBtn').text('Update');
+                $('#userModal').modal('show');
+            });
+
+            $(document).on('click', '.deleteBtn', function () {
+                var id = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'backend/users.php?action=delete',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ id: id }),
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    Swal.fire('Deleted!', response.message, 'success').then(function () {
+                                        loadUsers();
+                                    });
+                                } else {
+                                    Swal.fire('Error', response.message, 'error');
+                                }
+                            },
+                            error: function () {
+                                Swal.fire('Error', 'Failed to delete user.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
