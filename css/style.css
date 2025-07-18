@@ -9350,6 +9350,9 @@ Page Title
 .course-details-info-link:nth-child(5) .course-details-info-icon {
   background-color: var(--theme-color5);
 }
+.course-details-info-link:nth-child(6) .course-details-info-icon {
+  background-color: var(--theme-color4);
+}
 .course-details-info-link + .course-details-info-link {
   border-top: 1px dashed;
   border-color: var(--theme-color3);
@@ -10091,7 +10094,7 @@ Page Title
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: var(--theme-color1);
+  /* background-color: var(--theme-color1); */
   text-align: center;
   padding: 21px 24px 20px;
   -webkit-box-align: center;
