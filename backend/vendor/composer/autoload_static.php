@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit19dce85914a0d40ff610e42a7553729f
+class ComposerStaticInitc7bd2ee72a49b0ef9ca862e05dc9768a
 {
     public static $files = array (
         '941748b3c8cae4466c827dfb5ca9602a' => __DIR__ . '/..' . '/rmccue/requests/library/Deprecated.php',
@@ -21,6 +21,10 @@ class ComposerStaticInit19dce85914a0d40ff610e42a7553729f
             'Razorpay\\Tests\\' => 15,
             'Razorpay\\Api\\' => 13,
         ),
+        'P' => 
+        array (
+            'PHPMailer\\PHPMailer\\' => 20,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -36,6 +40,10 @@ class ComposerStaticInit19dce85914a0d40ff610e42a7553729f
         array (
             0 => __DIR__ . '/..' . '/razorpay/razorpay/src',
         ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
     );
 
     public static $classMap = array (
@@ -46,9 +54,9 @@ class ComposerStaticInit19dce85914a0d40ff610e42a7553729f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit19dce85914a0d40ff610e42a7553729f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit19dce85914a0d40ff610e42a7553729f::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit19dce85914a0d40ff610e42a7553729f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc7bd2ee72a49b0ef9ca862e05dc9768a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc7bd2ee72a49b0ef9ca862e05dc9768a::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc7bd2ee72a49b0ef9ca862e05dc9768a::$classMap;
 
         }, null, ClassLoader::class);
     }
