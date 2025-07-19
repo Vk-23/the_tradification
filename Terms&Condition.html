@@ -250,212 +250,91 @@
 		</header>
 		<!--End Main Header -->
 
+		<!-- Sticky Header  -->
+		<div class="sticky-header">
+			<div class="auto-container">
+				<div class="inner-container">
+					<!--Logo-->
+					<div class="logo">
+						<a href="index.html" title=""><img src="images/logo.png" alt="" title=""></a>
+					</div>
 
-	<!-- Start main-content -->
-	<section class="page-title" style="background-image: url(images/background/page-title.jpg);">
-		<div class="auto-container">
-			<div class="title-outer">
-				<h1 class="title">Webinars</h1>
-				<ul class="page-breadcrumb">
-					<li><a href="index.html">Home</a></li>
-					<!-- <li><a href="#">Pages</a></li> -->
-					<li>Webinars</li>
-				</ul>
+					<!--Right Col-->
+					<div class="nav-outer">
+						<!-- Main Menu -->
+						<nav class="main-menu">
+							<div class="navbar-collapse show collapse clearfix">
+								<ul class="navigation clearfix">
+									<!--Keep This Empty / Menu will come through Javascript-->
+								</ul>
+							</div>
+						</nav><!-- Main Menu End-->
+
+						<!--Mobile Navigation Toggler-->
+						<div class="mobile-nav-toggler"><span class="icon lnr-icon-bars"></span></div>
+					</div>
+				</div>
 			</div>
-		</div>
-	</section>
-	<!-- end main-content -->
+		</div><!-- End Sticky Menu -->
+	</header>
+	<!--End Main Header -->
 
-	<!-- Featured Products -->
-<!-- ✅ 1. HTML for Course Filter UI -->
-<section class="featured-products">
-  <span class="bg-shape"></span>
-  <div class="auto-container">
-    <div class="mixitup-gallery">
-
-      <!-- Filter Tabs -->
-   
-<div class="filters clearfix">
-  <ul class="filter-tabs filter-btns clearfix" id="category-filters">
-    <!-- Categories will be loaded here -->
-  </ul>
-</div>
-
-      <!-- Course List -->
-      <div class="filter-list row">
-        <!-- webinar will be injected dynamically -->
-      </div>
-    </div>
-  </div>
-</section>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const filterList = document.getElementById("category-filters");
-  const courseContainer = document.querySelector('.filter-list');
-
-  // Load categories and build filter buttons
-  function loadCategories() {
-    fetch("backend/fetch_categories_webinar.php")
-      .then(res => res.json())
-      .then(data => {
-        filterList.innerHTML = `
-          <li class="active filter" data-filter="all">All</li>
-          ${data.map(cat => `
-            <li class="filter" data-filter="${cat.id}">${cat.name}</li>
-          `).join('')}
-        `;
-
-        // Add event listeners to filter buttons
-        filterList.querySelectorAll(".filter").forEach(button => {
-          button.addEventListener("click", () => {
-            filterList.querySelectorAll(".filter").forEach(btn => btn.classList.remove("active"));
-            button.classList.add("active");
-
-            const categoryId = button.getAttribute("data-filter");
-            loadwebinar(categoryId);
-          });
-        });
-      });
-  }
-
-  // Load webinar/webinars based on category
-  function loadwebinar(category) {
-    const url = category === 'all'
-      ? 'backend/fetch_webinars.php'
-      : `backend/fetch_webinars.php?category=${category}`;
-
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        courseContainer.innerHTML = '';
-
-        if (data.length === 0) {
-          courseContainer.innerHTML = '<p>No webinar found.</p>';
-          return;
-        }
-
-        data.forEach(course => {
-          const courseHtml = `
-            <div class="course-block-two col-lg-4 col-md-6 col-sm-12">
-              <div class="inner-box">
-        <div class="image-box">
-          <figure class="image"><a href="page-webinar-details.html?id=${course.id}"><img src="project-settings/backend/uploads/${course.thumbnail}" alt="" ></a></figure>
-          <span class="price">$${course.price}</span>
-          <div class="value">Advanced</div>
+<section class="terms-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Terms &amp; Conditions</h2>
+            <p class="text-muted">Please read the following terms carefully before using our services.</p>
         </div>
-                <div class="content-box">
-                  <ul class="course-info">
-                    <li><i class="fa fa-book"></i> 8 Lessons</li>
-                    <li><i class="fa fa-users"></i> 16 Students</li>
-                    <li><i class="fa fa-clock"></i> ${course.hours || 3} Weeks</li>
-                  </ul>
-                  <h5 class="title"><a href="page-webinar-details.html?id=${course.id}">${course.name}</a></h5>
-                  <div class="other-info">
-                    <div class="rating-box">
-                      <span class="text">(4.9 /8 Rating)</span>
-                      <div class="rating">
-                        <span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span><span class="fa fa-star"></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>`;
-          courseContainer.insertAdjacentHTML('beforeend', courseHtml);
-        });
-      });
-  }
+        <div class="content-box">
+            <p><strong>Effective Date:</strong> [Insert Date]</p>
+            <p>Welcome to The Tradification. By accessing or using our website, courses, webinars, and other services, you agree to the following Terms and Conditions. Please read them carefully.</p>
 
-  // Initial load
-  loadCategories();
-  loadwebinar('all');
-});
-</script>
+            <h4 class="mt-4 mb-2">1. Use of Our Services</h4>
+            <ul class="ms-4 mb-4">
+                <li>You must be at least 18 years old or have legal parental/guardian consent.</li>
+                <li>You agree to use the platform only for lawful purposes and in accordance with these terms.</li>
+            </ul>
 
-<!-- ✅ 2. JavaScript (AJAX) -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const filterButtons = document.querySelectorAll('.filter-tabs .filter');
-  const courseContainer = document.querySelector('.filter-list');
+            <h4 class="mt-4 mb-2">2. Account Registration</h4>
+            <ul class="ms-4 mb-4">
+                <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
+                <li>You agree to provide accurate, current, and complete information during registration.</li>
+            </ul>
 
-  const loadwebinar = (category) => {
-    const url = category === 'all'
-      ? 'backend/fetch_webinars.php'
-      : `backend/fetch_webinars.php?category=${category}`;
+            <h4 class="mt-4 mb-2">3. Intellectual Property</h4>
+            <ul class="ms-4 mb-4">
+                <li>All content on this website including courses, graphics, and branding is the property of The Tradification and protected by copyright.</li>
+                <li>You may not copy, reproduce, distribute, or resell any content without written permission.</li>
+            </ul>
 
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        courseContainer.innerHTML = '';
+            <h4 class="mt-4 mb-2">4. Payments</h4>
+            <ul class="ms-4 mb-4">
+                <li>All payments for courses or webinars must be made in advance.</li>
+                <li>Prices are subject to change without notice.</li>
+            </ul>
 
-        if (data.length === 0) {
-          courseContainer.innerHTML = '<p>No webinar found.</p>';
-          return;
-        }
+            <h4 class="mt-4 mb-2">5. Limitation of Liability</h4>
+            <ul class="ms-4 mb-4">
+                <li>We are not liable for any trading loss or financial decision made based on our content.</li>
+                <li>Our content is for educational purposes only and should not be considered financial advice.</li>
+            </ul>
 
-        data.forEach(course => {
-          const courseHtml = `
-            <div class="course-block-two col-lg-4 col-md-6 col-sm-12">
-              <div class="inner-box">
-                <div class="image-box">
-                  <figure class="image"><a href="page-webinar-details.html?id=${course.id}"><img src="project-settings/backend/uploads/${course.thumbnail}" alt=""style="width:300px !important; height:200px !important; object-fit:cover;"></a></figure>
-                  <span class="price">$${course.price}</span>
-                  <div class="value">Advanced</div>
-                </div>
-                <div class="content-box">
-                  <ul class="course-info">
-                    <li><i class="fa fa-book"></i> ${course.webinar_date} </li>
-                    <li><i class="fa fa-users"></i> ${course.webinar_time}</li>
-                    <li><i class="fa fa-clock"></i> ${course.hours || 3} hours</li>
-                  </ul>
-                  <h5 class="title"><a href="page-webinar-details.html?id=${course.id}">${course.name}</a></h5>
-                                  <p class="title"><a href="page-webinar-details.html?id=${course.id}">${course.short_description}</a></p>
+            <h4 class="mt-4 mb-2">6. Modifications</h4>
+            <p class="mb-4">The Tradification reserves the right to modify or update these terms at any time.</p>
 
-                </div>
-              </div>
-            </div>`;
-          courseContainer.insertAdjacentHTML('beforeend', courseHtml);
-        });
-      });
-  };
+            <h4 class="mt-4 mb-2">7. Termination</h4>
+            <p class="mb-4">We reserve the right to suspend or terminate access if you violate any terms or engage in fraudulent activity.</p>
 
-  filterButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+            <h4 class="mt-4 mb-2">Contact Us</h4>
+            <p>
+                If you have any questions, feel free to contact us:<br>
+                📧 <a href="mailto:support@thetradification.com">support@thetradification.com</a>
+            </p>
+        </div>
+    </div>
+</section>
 
-      const category = btn.getAttribute('data-filter');
-      loadwebinar(category);
-    });
-  });
-
-  loadwebinar('all');
-});
-
-//   1. load categories  → build filter buttons
-//   2. when a button is clicked  → call loadwebinar(ID)
-function loadCategories(){
-  fetch('backend/fetch_categories_webinar.php')
-    .then(r=>r.json())
-    .then(catArr=>{
-      const ul = document.getElementById('category-filters');
-      ul.innerHTML = '<li class="active filter" data-filter="all">All</li>' +
-        catArr.map(c=>`<li class="filter" data-filter="${c.id}">${c.name}</li>`).join('');
-      attachFilterEvents();   // add click listeners
-    });
-}
-
-function loadwebinar(catId='all'){
-  fetch(`backend/fetch_webinars.php?category=${catId}`)
-    .then(r=>r.json())
-    .then(renderwebinar);     // your existing renderwebinar implementation
-}
-
-</script>
-
-	<!-- End Featured Products -->
-
-		<!-- Main Footer -->
+<!-- Main Footer -->
 		<footer class="main-footer">
 			<div class="bg-image zoom-two" style="background-image: url(images/background/4.jpg)"></div>
 
@@ -571,69 +450,35 @@ function loadwebinar(catId='all'){
 
 </div><!-- End Page Wrapper -->
 
-
 <!-- Scroll To Top -->
 <div class="scroll-to-top scroll-to-target" data-target="html"><span class="fa fa-angle-up"></span></div>
 
-
-<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="js/jquery.js"></script>
+<script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="js/jquery.js"></script> 
 <script src="js/popper.min.js"></script>
+<!--Revolution Slider-->
+<script src="plugins/revolution/js/jquery.themepunch.revolution.min.js"></script>
+<script src="plugins/revolution/js/jquery.themepunch.tools.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+<script src="plugins/revolution/js/extensions/revolution.extension.video.min.js"></script>
+<script src="js/main-slider-script.js"></script>
+<!--Revolution Slider-->
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.fancybox.js"></script>
 <script src="js/jquery-ui.js"></script>
-<script src="js/jquery.countdown.js"></script>
-<script src="js/mixitup.js"></script>
 <script src="js/wow.js"></script>
 <script src="js/appear.js"></script>
+<script src="js/jquery.countdown.js"></script>
 <script src="js/select2.min.js"></script>
 <script src="js/swiper.min.js"></script>
 <script src="js/owl.js"></script>
 <script src="js/script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  fetch("backend/check_session.php") // adjust path as needed
-    .then(res => res.json())
-    .then(data => {
-      const userNav = document.getElementById("user-nav");
-
-      if (data.loggedIn) {
-        userNav.innerHTML = `
-          <div class="dropdown">
-            <button class="theme-btn btn-style-two dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-              Welcome, ${data.userName}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="userDropdown">
-              <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-              <li><a class="dropdown-item" href="history.html">History</a></li>
-              <li><a class="dropdown-item" href="#" id="logout-btn">Logout</a></li>
-            </ul>
-          </div>
-        `;
-      } else {
-        userNav.innerHTML = `
-          <a href="login.html" class="theme-btn btn-style-two"><span class="btn-title">Login</span></a>
-        `;
-      }
-    });
-});
-
-document.addEventListener("click", function (e) {
-  if (e.target && e.target.id === "logout-btn") {
-    e.preventDefault();
-
-    fetch("backend/logout.php")
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          location.reload(); // reload page to show Login button again
-        }
-      });
-  }
-});
-
-</script>
 </body>
 
 </html>
