@@ -251,123 +251,102 @@
 		<!--End Main Header -->
 
 
-		<!-- Start main-content -->
-		<section class="page-title" style="background-image: url(images/background/page-title.jpg);">
-			<div class="auto-container">
-				<div class="title-outer">
-					<h1 class="title">Contact Us</h1>
-					<ul class="page-breadcrumb">
-						<li><a href="index.html">Home</a></li>
-						<li>Contact</li>
+	<!--Contact Details Start-->
+<section class="contact-details">
+	<div class="container">
+		<div class="row gy-5">
+			<!-- Contact Form -->
+			<div class="col-lg-6 col-md-12">
+				<div class="sec-title">
+					<h2>Feel free to write</h2>
+				</div>
+				<form id="contact_form" name="contact_form" action="backend/submit_contact.php" method="post">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="mb-3">
+								<input name="form_name" class="form-control" type="text" placeholder="Enter Name" required>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="mb-3">
+								<input name="form_email" class="form-control" type="email" placeholder="Enter Email" required>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="mb-3">
+								<input name="form_subject" class="form-control" type="text" placeholder="Enter Subject" required>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="mb-3">
+								<input name="form_phone" class="form-control" type="text" placeholder="Enter Phone">
+							</div>
+						</div>
+					</div>
+					<div class="mb-3">
+						<textarea name="form_message" class="form-control" rows="6" placeholder="Enter Message" required></textarea>
+					</div>
+					<div class="mb-3 d-flex flex-wrap gap-2">
+						<input name="form_botcheck" class="form-control" type="hidden" value="" />
+						<button type="submit" class="theme-btn btn-style-one" data-loading-text="Please wait...">
+							<span class="btn-title">Send message</span>
+						</button>
+						<button type="reset" class="theme-btn btn-style-one bg-theme-color5">
+							<span class="btn-title">Reset</span>
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<!-- Contact Info -->
+			<div class="col-lg-6 col-md-12">
+				<div class="contact-details__right">
+					<div class="sec-title">
+						<span class="sub-title">Need any help?</span>
+						<h2>Get in touch with us</h2>
+						<div class="text">
+							We’re here to answer your questions, collaborate on ideas, or assist you in any way we can.
+						</div>
+					</div>
+
+					<ul class="list-unstyled contact-details__info">
+						<li class="d-flex mb-4">
+							<div class="icon flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle " style="width: 60px; height: 60px; font-size: 24px;">
+								<span class="lnr-icon-phone-plus"></span>
+							</div>
+							<div class="text ms-3">
+								<h6>Have any question?</h6>
+								<a href="tel:980089850"><span>Free</span> +91 6268491275</a>
+							</div>
+						</li>
+						<li class="d-flex mb-4">
+							<div class="icon flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle" style="width: 60px; height: 60px; font-size: 24px;">
+								<span class="lnr-icon-envelope1"></span>
+							</div>
+							<div class="text ms-3">
+								<h6>Write email</h6>
+								<a href="#"><span class="__cf_email__">support@thetradification.com</span></a>
+							</div>
+						</li>
+						<li class="d-flex mb-4">
+							<div class="icon flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle" style="width: 60px; height: 60px; font-size: 24px;">
+								<span class="lnr-icon-location"></span>
+							</div>
+							<div class="text ms-3">
+								<h6>Visit anytime</h6>
+								<span>403, SS ENCLAVE UMARIYA MHOW</span>
+							</div>
+						</li>
 					</ul>
 				</div>
 			</div>
-		</section>
-		<!-- end main-content -->
+		</div>
+	</div>
+</section>
+<!--Contact Details End-->
 
-		<!--Contact Details Start-->
-		<section class="contact-details">
-			<div class="container ">
-				<div class="row">
-					<div class="col-xl-7 col-lg-6">
-						<div class="sec-title">
-							<h2>Feel free to write</h2>
-						</div>
-						<!-- Contact Form -->
-						<form id="contact_form" name="contact_form" action="backend/submit_contact.php" method="post">
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="mb-3">
-										<input name="form_name" class="form-control" type="text"
-											placeholder="Enter Name" required>
-									</div>
-								</div>
-								<div class="col-sm-6">
-									<div class="mb-3">
-										<input name="form_email" class="form-control" type="email"
-											placeholder="Enter Email" required>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="mb-3">
-										<input name="form_subject" class="form-control" type="text"
-											placeholder="Enter Subject" required>
-									</div>
-								</div>
-								<div class="col-sm-6">
-									<div class="mb-3">
-										<input name="form_phone" class="form-control" type="text"
-											placeholder="Enter Phone">
-									</div>
-								</div>
-							</div>
-							<div class="mb-3">
-								<textarea name="form_message" class="form-control" rows="7" placeholder="Enter Message"
-									required></textarea>
-							</div>
-							<div class="mb-3">
-								<input name="form_botcheck" class="form-control" type="hidden" value="" />
-								<button type="submit" class="theme-btn btn-style-one"
-									data-loading-text="Please wait...">
-									<span class="btn-title">Send message</span>
-								</button>
-								<button type="reset" class="theme-btn btn-style-one bg-theme-color5">
-									<span class="btn-title">Reset</span>
-								</button>
-							</div>
-						</form>
-
-						<!-- Contact Form Validation-->
-					</div>
-					<div class="col-xl-5 col-lg-6">
-						<div class="contact-details__right">
-							<div class="sec-title">
-								<span class="sub-title">Need any help?</span>
-								<h2>Get in touch with us</h2>
-								<div class="text">We’re here to answer your questions, collaborate on ideas, or assist
-									you in any way we can. Whether you have an inquiry, feedback, or just want to
-									connect, feel free to drop us a message using the form below.</div>
-							</div>
-							<ul class="list-unstyled contact-details__info">
-								<li>
-									<div class="icon">
-										<span class="lnr-icon-phone-plus"></span>
-									</div>
-									<div class="text">
-										<h6>Have any question?</h6>
-										<a href="tel:980089850"><span>Free</span> +91 6268491275</a>
-									</div>
-								</li>
-								<li>
-									<div class="icon">
-										<span class="lnr-icon-envelope1"></span>
-									</div>
-									<div class="text">
-										<h6>Write email</h6>
-										<a
-											href="https://html.kodesolution.com/cdn-cgi/l/email-protection#66080303020e030a162605090b1607081f4805090b"><span
-												class="__cf_email__"
-												data-cfemail="a9c7cccccdc1ccc5d9e9cac6c4d9c8c7d087cac6c4">support@thetradification.com</span></a>
-									</div>
-								</li>
-								<li>
-									<div class="icon">
-										<span class="lnr-icon-location"></span>
-									</div>
-									<div class="text">
-										<h6>Visit anytime</h6>
-										<span>403,SS ENCLAVE UMARIYA MHOW</span>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!--Contact Details End-->
 
 		<!-- Divider: Google Map -->
 		<section>
@@ -394,7 +373,7 @@
 								<div class="logo d-flex align-items-center justify-content-center  mb-3 mx-auto mr-3"
 									style="width: 90px; height: 90px; "><a href="index.html"><img
 											src="images/logo-2.png" alt=""></a></div>
-								<div class="text">The Tradification — Learn. Trade. Grow.Empowering every trader’s journey with insight and confidence.</div>
+								<div class="text mt-4">The Tradification — Learn. Trade. Grow. Empowering every trader’s journey with insight and confidence.</div>
 								<!-- <ul class="social-icon-two">
 									<li><a href="https://x.com/zaidshe72458514"><span class="fab fa-twitter"></span></a>
 									</li>
